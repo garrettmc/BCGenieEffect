@@ -136,7 +136,7 @@ static const int BCTrapezoidWinding[4][4] = {
                       destinationRect:(CGRect)destRect
                       destinationEdge:(BCRectEdge)destEdge
                            completion:(void (^)())completion {
-    UIImage *snapshot = [self snapShotWithStartEdge:destEdge];
+    UIImage *snapshot = [self genieSnapShotWithStartEdge:destEdge];
     
     [self genieInTransitionSnapshot:snapshot
                             toView:self.superview
@@ -168,7 +168,7 @@ static const int BCTrapezoidWinding[4][4] = {
                              startRect:(CGRect)startRect
                              startEdge:(BCRectEdge)startEdge
                             completion:(void (^)())completion {
-    UIImage *snapshot = [self snapShotWithStartEdge:startEdge];
+    UIImage *snapshot = [self genieSnapShotWithStartEdge:startEdge];
 
     [self genieOutTransitionSnapshot:snapshot
                              toView:self.superview
@@ -181,7 +181,7 @@ static const int BCTrapezoidWinding[4][4] = {
 
 #pragma mark - privates
 
-- (UIImage *) snapShotWithStartEdge:(BCRectEdge)startEdge
+- (UIImage *) genieSnapShotWithStartEdge:(BCRectEdge)startEdge
 {
     BCAxis axis = axisForEdge(startEdge);
     UIImage *snapshot = [self renderSnapshotWithMarginForAxis:axis];

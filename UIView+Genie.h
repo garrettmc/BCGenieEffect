@@ -18,7 +18,7 @@ typedef NS_ENUM(NSUInteger, BCRectEdge) {
 @interface UIView (Genie)
 
 
-// Build a snapshot for geineIn/OutTransitionSnapshot:.*
+// Build a snapshot for genie/OutTransitionSnapshot:.*
 - (UIImage *) genieSnapShotWithStartEdge:(BCRectEdge)startEdge;
 
 /*
