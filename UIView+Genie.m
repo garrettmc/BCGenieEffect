@@ -115,31 +115,68 @@ static const int BCTrapezoidWinding[4][4] = {
 
 #pragma mark - publics
 
-- (void)genieInTransitionWithDuration:(NSTimeInterval)duration destinationRect:(CGRect)destRect destinationEdge:(BCRectEdge)destEdge completion:(void (^)())completion {
-    
-    [self genieTransitionWithDuration:duration
-                                 edge:destEdge
-                      destinationRect:destRect
-                              reverse:NO
-                           completion:completion];
+- (void)genieInTransitionToView:(UIView *)view
+                   belowSubView:(UIView *)belowSubView
+                   withDuration:(NSTimeInterval)duration
+                destinationRect:(CGRect)destRect
+                destinationEdge:(BCRectEdge)destEdge
+                     completion:(void (^)())completion {
+    [self genieTransitionFromView:view
+                     belowSubView:belowSubView
+                     withDuration:duration
+                             edge:destEdge
+                  destinationRect:destRect
+                          reverse:NO
+                       completion:completion];
+}
+
+- (void)genieInTransitionWithDuration:(NSTimeInterval)duration
+                      destinationRect:(CGRect)destRect
+                      destinationEdge:(BCRectEdge)destEdge
+                           completion:(void (^)())completion {
+    [self genieInTransitionToView:self.superview
+                     belowSubView:self
+                     withDuration:duration
+                  destinationRect:destRect
+                  destinationEdge:destEdge
+                       completion:completion];
+}
+
+- (void)genieOutTransitionToView:(UIView*)view
+                    belowSubView:(UIView *)belowSubView
+                    withDuration:(NSTimeInterval)duration
+                       startRect:(CGRect)startRect
+                       startEdge:(BCRectEdge)startEdge
+                      completion:(void (^)())completion {
+    [self genieOutTransitionWithView:view
+                        belowSubView:belowSubView
+                            duration:duration
+                                edge:startEdge
+                     destinationRect:startRect
+                             reverse:YES
+                          completion:completion];
 }
 
 - (void)genieOutTransitionWithDuration:(NSTimeInterval)duration startRect:(CGRect)startRect startEdge:(BCRectEdge)startEdge completion:(void (^)())completion {
-    [self genieTransitionWithDuration:duration
-                                 edge:startEdge
-                      destinationRect:startRect
-                              reverse:YES
-                           completion:completion];
+    [self genieTransitionToView:self.superview
+                   belowSubView:self
+                         duration:duration
+                             edge:startEdge
+                  destinationRect:startRect
+                          reverse:YES
+                       completion:completion];
 }
 
 #pragma mark - privates
 
 
-- (void) genieTransitionWithDuration:(NSTimeInterval) duration
-                           edge:(BCRectEdge) edge
-                     destinationRect:(CGRect)destRect
-                             reverse:(BOOL)reverse
-                          completion:(void (^)())completion
+- (void) genieTransitionToView:(UIView *)toView
+                  belowSubView:(UIView *)belowSubView
+                  withDuration:(NSTimeInterval) duration
+                          edge:(BCRectEdge) edge
+               destinationRect:(CGRect)destRect
+                       reverse:(BOOL)reverse
+                    completion:(void (^)())completion
 {
     assert(!CGRectIsNull(destRect));
     
@@ -157,7 +194,7 @@ static const int BCTrapezoidWinding[4][4] = {
     
     CGRect marginedDestRect = CGRectInset(destRect, xInset*destRect.size.width/self.bounds.size.width, yInset*destRect.size.height/self.bounds.size.height);
     CGFloat endRectDepth = isEdgeVertical(edge) ? marginedDestRect.size.height : marginedDestRect.size.width;
-    BCSegment aPoints = bezierEndPointsForTransition(edge, [self convertRect:CGRectInset(self.bounds, xInset, yInset) toView:self.superview]);
+    BCSegment aPoints = bezierEndPointsForTransition(edge, [self convertRect:CGRectInset(self.bounds, xInset, yInset) toView:toView]);
     
     BCSegment bEndPoints = bezierEndPointsForTransition(edge, marginedDestRect);
     BCSegment bStartPoints = aPoints;
@@ -186,10 +223,10 @@ static const int BCTrapezoidWinding[4][4] = {
         NSLog(@"Genie Effect Warning: The %@ edge of animated view overlaps %@ edge of %@ rect. Glitches may occur.",edgeDescription((edge + 2) % 4), edgeDescription(edge), reverse ? @"start" : @"destination");
     }
     
-    UIView *containerView = [[UIView alloc] initWithFrame:[self.superview bounds]];
-    containerView.clipsToBounds = self.superview.clipsToBounds; // if superview does it then we should probably do it as well
+    UIView *containerView = [[UIView alloc] initWithFrame:[toView bounds]];
+    containerView.clipsToBounds = toView.clipsToBounds; // if our superview does it then we should probably do it as well
     containerView.backgroundColor = [UIColor clearColor];    
-    [self.superview insertSubview:containerView belowSubview:self];
+    [toView insertSubview:containerView belowSubview:belowSubView];
     
     NSMutableArray *transforms = [NSMutableArray arrayWithCapacity:[slices count]];
     
