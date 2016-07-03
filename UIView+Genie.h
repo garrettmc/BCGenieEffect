@@ -21,12 +21,13 @@ typedef NS_ENUM(NSUInteger, BCRectEdge) {
  * After the animation has completed the view's transform will be changed to match the destination's rect, i.e.
  * view's transform (and thus the frame) will change, however the bounds and center will *not* change.
  */
-- (void)genieInTransitionToView:(UIView *)view
-                   belowSubView:(UIView *)belowSubView
-                   withDuration:(NSTimeInterval)duration
-                destinationRect:(CGRect)destRect
-                destinationEdge:(BCRectEdge)destEdge
-                     completion:(void (^)())completion;
+- (void)genieInTransitionSnapshot:(UIImage *)image
+                           toView:(UIView *)view
+                     belowSubView:(UIView *)belowSubView
+                     withDuration:(NSTimeInterval)duration
+                  destinationRect:(CGRect)destRect
+                  destinationEdge:(BCRectEdge)destEdge
+                       completion:(void (^)())completion;
 
 /*
  * Calls genieInTransitionToView:self.superview belowSubView:self ...
@@ -44,12 +45,13 @@ typedef NS_ENUM(NSUInteger, BCRectEdge) {
  * After the animation has completed the view's transform will be changed to CGAffineTransformIdentity.
  * I altered this to add a toView and belowSubView to let you genie a window in to a non-superview.
  */
-- (void)genieOutTransitionToView:(UIView *)view
-                    belowSubView:(UIView *)belowSubView
-                    withDuration:(NSTimeInterval)duration
-                       startRect:(CGRect)startRect
-                       startEdge:(BCRectEdge)startEdge
-                      completion:(void (^)())completion;
+- (void)genieOutTransitionSnapshot:(UIImage *)image
+                            toView:(UIView *)view
+                      belowSubView:(UIView *)belowSubView
+                      withDuration:(NSTimeInterval)duration
+                         startRect:(CGRect)startRect
+                         startEdge:(BCRectEdge)startEdge
+                        completion:(void (^)())completion;
 
 /*
  * Calls sgenieOutTransitionToView:self.superview belowSubView:self ...

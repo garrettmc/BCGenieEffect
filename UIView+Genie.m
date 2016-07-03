@@ -115,40 +115,48 @@ static const int BCTrapezoidWinding[4][4] = {
 
 #pragma mark - publics
 
-- (void)genieInTransitionToView:(UIView *)view
-                   belowSubView:(UIView *)belowSubView
-                   withDuration:(NSTimeInterval)duration
-                destinationRect:(CGRect)destRect
-                destinationEdge:(BCRectEdge)destEdge
-                     completion:(void (^)())completion {
-    [self genieTransitionToView:view
-                   belowSubView:belowSubView
-                   withDuration:duration
-                           edge:destEdge
-                destinationRect:destRect
-                        reverse:NO
-                     completion:completion];
+- (void)genieInTransitionSnapshot:(UIImage *)snapshot
+                           toView:(UIView *)view
+                     belowSubView:(UIView *)belowSubView
+                     withDuration:(NSTimeInterval)duration
+                  destinationRect:(CGRect)destRect
+                  destinationEdge:(BCRectEdge)destEdge
+                       completion:(void (^)())completion {
+    [self genieTransitionSnapshot:snapshot
+                           toView:view
+                     belowSubView:belowSubView
+                     withDuration:duration
+                             edge:destEdge
+                  destinationRect:destRect
+                          reverse:NO
+                       completion:completion];
 }
 
 - (void)genieInTransitionWithDuration:(NSTimeInterval)duration
                       destinationRect:(CGRect)destRect
                       destinationEdge:(BCRectEdge)destEdge
                            completion:(void (^)())completion {
-    [self genieInTransitionToView:self.superview
-                     belowSubView:self
-                     withDuration:duration
-                  destinationRect:destRect
-                  destinationEdge:destEdge
-                       completion:completion];
+    BCAxis axis = axisForEdge(destEdge);
+    UIImage *snapshot = [self renderSnapshotWithMarginForAxis:axis];
+    
+    [self genieInTransitionSnapshot:snapshot
+                            toView:self.superview
+                      belowSubView:self
+                      withDuration:duration
+                   destinationRect:destRect
+                   destinationEdge:destEdge
+                        completion:completion];
 }
 
-- (void)genieOutTransitionToView:(UIView*)view
-                    belowSubView:(UIView *)belowSubView
-                    withDuration:(NSTimeInterval)duration
-                       startRect:(CGRect)startRect
-                       startEdge:(BCRectEdge)startEdge
-                      completion:(void (^)())completion {
-    [self genieTransitionToView:view
+- (void)genieOutTransitionSnapshot:(UIImage *)snapshot
+                            toView:(UIView*)view
+                      belowSubView:(UIView *)belowSubView
+                      withDuration:(NSTimeInterval)duration
+                         startRect:(CGRect)startRect
+                         startEdge:(BCRectEdge)startEdge
+                        completion:(void (^)())completion {
+    [self genieTransitionSnapshot:snapshot
+                           toView:view
                    belowSubView:belowSubView
                    withDuration:duration
                            edge:startEdge
@@ -161,25 +169,29 @@ static const int BCTrapezoidWinding[4][4] = {
                              startRect:(CGRect)startRect
                              startEdge:(BCRectEdge)startEdge
                             completion:(void (^)())completion {
-    [self genieTransitionToView:self.superview
-                   belowSubView:self
-                    withDuration:duration
-                           edge:startEdge
-                destinationRect:startRect
-                        reverse:YES
-                     completion:completion];
+    BCAxis axis = axisForEdge(startEdge);
+    UIImage *snapshot = [self renderSnapshotWithMarginForAxis:axis];
+
+    [self genieOutTransitionSnapshot:snapshot
+                             toView:self.superview
+                       belowSubView:self
+                       withDuration:duration
+                           startRect:startRect
+                           startEdge:startEdge
+                          completion:completion];
 }
 
 #pragma mark - privates
 
 
-- (void) genieTransitionToView:(UIView *)toView
-                  belowSubView:(UIView *)belowSubView
-                  withDuration:(NSTimeInterval) duration
-                          edge:(BCRectEdge) edge
-               destinationRect:(CGRect)destRect
-                       reverse:(BOOL)reverse
-                    completion:(void (^)())completion
+- (void) genieTransitionSnapshot:(UIImage *)snapshot
+                          toView:(UIView *)toView
+                    belowSubView:(UIView *)belowSubView
+                    withDuration:(NSTimeInterval) duration
+                            edge:(BCRectEdge) edge
+                 destinationRect:(CGRect)destRect
+                         reverse:(BOOL)reverse
+                      completion:(void (^)())completion
 {
     assert(!CGRectIsNull(destRect));
     
@@ -188,7 +200,6 @@ static const int BCTrapezoidWinding[4][4] = {
     
     self.transform = CGAffineTransformIdentity;
     
-    UIImage *snapshot = [self renderSnapshotWithMarginForAxis:axis];
     NSArray *slices = [self sliceImage:snapshot toLayersAlongAxis:axis];
     
     // Bezier calculations
