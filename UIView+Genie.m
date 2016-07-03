@@ -228,8 +228,12 @@ static const int BCTrapezoidWinding[4][4] = {
     
     UIView *containerView = [[UIView alloc] initWithFrame:[toView bounds]];
     containerView.clipsToBounds = toView.clipsToBounds; // if our superview does it then we should probably do it as well
-    containerView.backgroundColor = [UIColor clearColor];    
-    [toView insertSubview:containerView belowSubview:belowSubView];
+    containerView.backgroundColor = [UIColor clearColor];
+    
+    if (belowSubView)
+        [toView insertSubview:containerView belowSubview:belowSubView];
+    else
+        [toView addSubview:containerView];
     
     NSMutableArray *transforms = [NSMutableArray arrayWithCapacity:[slices count]];
     
