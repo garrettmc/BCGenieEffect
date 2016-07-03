@@ -121,13 +121,13 @@ static const int BCTrapezoidWinding[4][4] = {
                 destinationRect:(CGRect)destRect
                 destinationEdge:(BCRectEdge)destEdge
                      completion:(void (^)())completion {
-    [self genieTransitionFromView:view
-                     belowSubView:belowSubView
-                     withDuration:duration
-                             edge:destEdge
-                  destinationRect:destRect
-                          reverse:NO
-                       completion:completion];
+    [self genieTransitionToView:view
+                   belowSubView:belowSubView
+                   withDuration:duration
+                           edge:destEdge
+                destinationRect:destRect
+                        reverse:NO
+                     completion:completion];
 }
 
 - (void)genieInTransitionWithDuration:(NSTimeInterval)duration
@@ -148,23 +148,26 @@ static const int BCTrapezoidWinding[4][4] = {
                        startRect:(CGRect)startRect
                        startEdge:(BCRectEdge)startEdge
                       completion:(void (^)())completion {
-    [self genieOutTransitionWithView:view
-                        belowSubView:belowSubView
-                            duration:duration
-                                edge:startEdge
-                     destinationRect:startRect
-                             reverse:YES
-                          completion:completion];
+    [self genieTransitionToView:view
+                   belowSubView:belowSubView
+                   withDuration:duration
+                           edge:startEdge
+                destinationRect:startRect
+                        reverse:YES
+                     completion:completion];
 }
 
-- (void)genieOutTransitionWithDuration:(NSTimeInterval)duration startRect:(CGRect)startRect startEdge:(BCRectEdge)startEdge completion:(void (^)())completion {
+- (void)genieOutTransitionWithDuration:(NSTimeInterval)duration
+                             startRect:(CGRect)startRect
+                             startEdge:(BCRectEdge)startEdge
+                            completion:(void (^)())completion {
     [self genieTransitionToView:self.superview
                    belowSubView:self
-                         duration:duration
-                             edge:startEdge
-                  destinationRect:startRect
-                          reverse:YES
-                       completion:completion];
+                    withDuration:duration
+                           edge:startEdge
+                destinationRect:startRect
+                        reverse:YES
+                     completion:completion];
 }
 
 #pragma mark - privates
