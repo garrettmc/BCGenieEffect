@@ -17,6 +17,10 @@ typedef NS_ENUM(NSUInteger, BCRectEdge) {
 
 @interface UIView (Genie)
 
+
+// Build a snapshot for geineIn/OutTransitionSnapshot:.*
+- (UIImage *) genieSnapShotWithStartEdge:(BCRectEdge)startEdge;
+
 /*
  * After the animation has completed the view's transform will be changed to match the destination's rect, i.e.
  * view's transform (and thus the frame) will change, however the bounds and center will *not* change.
